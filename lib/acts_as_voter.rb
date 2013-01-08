@@ -13,7 +13,7 @@ module ThumbsUp #:nodoc:
         # the unique constraint on the [ voter, voteable ] index in the database.
         # has_many :votes, :as => :voter, :dependent => :nullify
         # Destroy votes when a user is deleted.
-        has_many :votes, :as => :voter, :dependent => :destroy
+        has_many :votes_given, :class_name => "Vote", :as => :voter, :dependent => :destroy
 
         include ThumbsUp::ActsAsVoter::InstanceMethods
         extend  ThumbsUp::ActsAsVoter::SingletonMethods

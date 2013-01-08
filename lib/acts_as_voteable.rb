@@ -8,7 +8,7 @@ module ThumbsUp
 
     module ClassMethods
       def acts_as_voteable
-        has_many :votes, :as => :voteable, :dependent => :destroy
+        has_many :votes_received, :class_name => "Vote", :as => :voteable, :dependent => :destroy
 
         include ThumbsUp::ActsAsVoteable::InstanceMethods
         extend  ThumbsUp::ActsAsVoteable::SingletonMethods
@@ -62,19 +62,19 @@ module ThumbsUp
     module InstanceMethods
 
       def votes_for
-        self.votes.where(:vote => true).count
+        self.votes_received.where(:vote => true).count
       end
 
       def votes_against
-        self.votes.where(:vote => false).count
+        self.votes_received.where(:vote => false).count
       end
 
       def percent_for
-        (votes_for.to_f * 100 / (self.votes.size + 0.0001)).round
+        (votes_for.to_f * 100 / (self.votes_received.size + 0.0001)).round
       end
 
       def percent_against
-        (votes_against.to_f * 100 / (self.votes.size + 0.0001)).round
+        (votes_against.to_f * 100 / (self.votes_received.size + 0.0001)).round
       end
 
       # You'll probably want to use this method to display how 'good' a particular voteable
@@ -89,7 +89,7 @@ module ThumbsUp
       # http://evanmiller.org/how-not-to-sort-by-average-rating.html
       def ci_plusminus(confidence = 0.95)
         require 'statistics2'
-        n = votes.size
+        n = votes_received.size
         if n == 0
           return 0
         end
@@ -99,11 +99,11 @@ module ThumbsUp
       end
 
       def votes_count
-        votes.size
+        votes_received.size
       end
 
       def voters_who_voted
-        votes.map(&:voter).uniq
+        votes_received.map(&:voter).uniq
       end
 
       def voted_by?(voter)
